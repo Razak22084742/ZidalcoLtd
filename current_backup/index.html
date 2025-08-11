@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zidalco Company Limited</title>
+    <link rel="stylesheet" href="css/Style.css">
+    <link rel="icon" type="image/png" href="Images/favicon.png">
+
+    <meta name="description" content="Zidalco Company Limited - Ghana's trusted construction partner delivering innovative and sustainable building solutions.">
+    <meta name="keywords" content="Zidalco, Construction, Engineering, Ghana, Building, Civil Works">
+    <meta name="author" content="Zidalco Company Limited">
+
+    <style>
+        /* ✅ Equal height cards */
+        .choose-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 20px;
+        }
+
+        .choose-card {
+          background: #fff;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 15px;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 300px; /* fixed height */
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .choose-card img {
+          max-width: 100%;
+          height: auto;
+        }
+
+        /* ✅ Slideshow styling */
+        .project-slideshow,
+        .support-slideshow {
+          flex: 1;
+          position: relative;
+          width: 100%;
+          height: 150px;
+          overflow: hidden;
+          border-radius: 8px;
+          margin-bottom: 10px;
+        }
+
+        .project-slideshow img,
+        .support-slideshow img {
+          position: absolute;
+          top: 0; left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0;
+          transition: opacity 1s ease-in-out;
+        }
+
+        .project-slideshow img.active,
+        .support-slideshow img.active {
+          opacity: 1;
+        }
+
+        /* ✅ Services styling */
+        .services {
+            background: #f4f4f4;
+            padding: 60px 5%;
+            text-align: center;
+        }
+        .services h2 { font-size: 2rem; margin-bottom: 30px; color: #006400; }
+        .service-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .card h3 { margin-bottom: 10px; color: #006400; }
+        .card p { color: #333; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+
+    <!-- ✅ Header -->
+   <header>
+    <div class="logo">
+        <img src="Images/logo.jpg" alt="Zidalco Logo" class="logo-img">
+        <span class="logo-text">Zidalco</span>
+    </div>
+
+    <!-- Regular Navigation (Always Visible on Header) -->
+    <nav class="main-nav">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hamburger Icon -->
+    <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+    </div>
+
+    <!-- Dropdown Menu -->
+    <nav id="dropdown-menu">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+
+            <li class="has-submenu">
+                <a href="about.html">About Us</a>
+                <ul class="submenu">
+                    <li><a href="about.html#mission">Mission</a></li>
+                    <li><a href="about.html#vision">Vision</a></li>
+                </ul>
+            </li>
+
+             <li class="has-submenu">
+                <a href="services.html">Services</a>
+                <ul class="submenu">
+                    <li><a href="building.html">Building Construction</a></li>
+                    <li><a href="civil.html">Civil Engineering</a></li>
+                    <li><a href="design.html">Architectural Design</a></li>
+                    <li><a href="renovations.html">Renovations</a></li>
+                    <li><a href="project.html">Project Management</a></li>
+                    <li><a href="consulting.html">Architectural Design</a></li>
+                </ul>
+            </li>
+
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+    <!-- ✅ Hero Section -->
+   <section class="hero">
+    <img src="Images/hero.jpg" alt="Hero Background" class="hero-bg">
+    <div class="hero-overlay">
+        <div class="hero-content">
+            <h1 id="hero-heading">Building Ghana’s Future</h1>
+            <p id="hero-text">Trusted partner for construction, engineering, and sustainable building solutions.</p>
+            <div class="cta-buttons">
+                <a href="services.html" class="btn">Our Services</a>
+                <a href="contact.html" class="btn">Contact Us</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <!-- ✅ About Section -->
+    <section class="about-home">
+        <div class="container">
+            <h2>About Us</h2>
+            <p class="intro">Zidalco Company Limited is a trusted construction and engineering company in Ghana...</p>
+
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>Our Mission</h3>
+                    <p>To provide innovative, cost-effective, and sustainable solutions...</p>
+                </div>
+                <div class="about-card">
+                    <h3>Our Vision</h3>
+                    <p>To become Ghana’s leading construction and engineering company recognized for excellence...</p>
+                </div>
+                <div class="about-card">
+                    <h3>Our Core Values</h3>
+                    <ul>
+                        <li>Integrity and Transparency</li>
+                        <li>Innovation and Quality</li>
+                        <li>Customer-Centric Approach</li>
+                        <li>Sustainability and Safety</li>
+                    </ul>
+                </div>
+            </div>
+            <a href="about.html" class="btn">Learn More About Us</a>
+        </div>
+    </section>
+<!-- ✅ Picture Animation Section -->
+<!-- ✅ Picture & Video Animation Section -->
+<section class="animated-gallery">
+    <div class="gallery-container">
+        <!-- Images -->
+        <img src="Images/gallery1.jpg" class="active" alt="Gallery Image 1">
+        <img src="Images/gallery2.jpg" alt="Gallery Image 2">
+        <img src="Images/gallery3.jpg" alt="Gallery Image 3">
+        <img src="Images/gallery4.jpg" alt="Gallery Image 4">
+
+        <!-- Video -->
+        <video class="gallery-video" autoplay muted loop>
+            <source src="videos/promo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</section>
+
+    <!-- ✅ Why Choose Us Section -->
+    <section class="why-choose-us">
+        <div class="container">
+            <h2>Why Choose Zidalco?</h2>
+            <p class="intro">We combine experience, innovation, and integrity to deliver top-quality solutions...</p>
+
+            <div class="choose-grid">
+            <div class="choose-card">
+    <div class="experience-slideshow">
+        <img src="Images/experience1.jpg" alt="Experience">
+    </div>
+    <h3>7+ Years Experience</h3>
+    <p>Our team has over seven years of experience delivering successful projects.</p>
+</div>
+
+                <div class="choose-card">
+                    <div class="project-slideshow">
+                        <img src="Images/project1.jpg" class="active" alt="Projects">
+                        <img src="Images/project2.jpg" alt="Projects">
+                        <img src="Images/project3.jpg" alt="Projects">
+                        <img src="Images/project4.jpg" alt="Projects">
+                        <img src="Images/project5.jpg" alt="Projects">
+                        <img src="Images/project6.jpg" alt="Projects">
+                    </div>
+                    <h3><span class="counter" data-target="200">0</span>+ Projects</h3>
+                    <p>From residential to industrial, we have completed hundreds of quality projects.</p>
+                </div>
+
+              <div class="choose-card">
+    <div class="quality-slideshow">
+        <img src="Images/quality1.jpg" class="active" alt="Quality Assurance 1">
+        <img src="Images/quality2.jpg" alt="Quality Assurance 2">
+    </div>
+    <h3>Quality Assurance</h3>
+    <p>We adhere to international construction standards and safety protocols.</p>
+</div>
+
+                <div class="choose-card">
+                    <div class="support-slideshow">
+                        <img src="Images/customerservice1.jpg" class="active" alt="Customer Support">
+                        <img src="Images/customerservice2.jpg" alt="Customer Support">
+                    </div>
+                    <h3>24/7 Support</h3>
+                    <p>Our clients enjoy responsive communication and after-project support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ✅ Services Section -->
+    <section class="services">
+        <h2>Our Key Services</h2>
+        <div class="service-cards">
+            <div class="card">
+                <a href="building.html">
+                    <h3>Building Construction</h3>
+                    <p>Residential, commercial, and industrial buildings with high standards.</p>
+                </a>
+            </div>
+            <div class="card">
+                <a href="civil.html">
+                    <h3>Civil Engineering</h3>
+                    <p>Infrastructure projects including roads, bridges, and drainage systems.</p>
+                </a>
+            </div>
+            <div class="card">
+                <a href="design.html">
+                    <h3>Architectural Design</h3>
+                    <p>Creative, functional, and sustainable architectural solutions.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="feedback">
+    <div class="container">
+        <h2>Customer Feedback</h2>
+
+        <form id="feedbackForm">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <textarea name="message" rows="4" maxlength="500" placeholder="Your Feedback" required></textarea>
+            <div class="char-counter"><span id="charCount">0</span>/500 characters</div>
+            <button type="submit" class="btn">Submit Feedback</button>
+        </form>
+
+        <!-- ✅ Comment Counter -->
+        <h3 id="commentCount">0 Comments</h3>
+
+        <!-- ✅ Comment List -->
+        <div class="comments-list" id="commentsList"></div>
+    </div>
+</section>
+
+
+    <!-- ✅ Contact CTA -->
+    <section class="contact-cta">
+        <h2>Ready to start your project?</h2>
+        <a href="contact.html" class="btn">Contact Us Now</a>
+    </section>
+
+    <!-- ✅ Footer -->
+    <footer>
+        <p>&copy; 2025 Zidalco Company Limited | All Rights Reserved</p>
+        <p>
+            <a href="index.html">Home</a> | 
+            <a href="about.html">About</a> | 
+            <a href="services.html">Services</a> | 
+            <a href="portfolio.html">Portfolio</a> | 
+            <a href="contact.html">Contact</a>
+        </p>
+        <p>Email: zidalcoltd@gmail.com | Phone: +233 248607920</p>
+    </footer>
+
+    <!-- ✅ Scripts -->
+    <script src="assets/js/script.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Project slideshow
+        const slides = document.querySelectorAll(".project-slideshow img");
+        let index = 0;
+        setInterval(() => {
+            slides.forEach(img => img.classList.remove("active"));
+            slides[index].classList.add("active");
+            index = (index + 1) % slides.length;
+        }, 3000);
+
+        // Support slideshow
+        const supportSlides = document.querySelectorAll(".support-slideshow img");
+        let sIndex = 0;
+        setInterval(() => {
+            supportSlides.forEach(img => img.classList.remove("active"));
+            supportSlides[sIndex].classList.add("active");
+            sIndex = (sIndex + 1) % supportSlides.length;
+        }, 3000);
+    });
+    </script>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const feedbackForm = document.getElementById("feedbackForm");
+    const commentsList = document.getElementById("commentsList");
+    const commentCount = document.getElementById("commentCount");
+    const charCount = document.getElementById("charCount");
+
+    // Load saved comments from localStorage
+    let comments = JSON.parse(localStorage.getItem("comments")) || [];
+    renderComments();
+
+    // ✅ Character Counter
+    feedbackForm.message.addEventListener("input", () => {
+        charCount.textContent = feedbackForm.message.value.length;
+    });
+
+    // ✅ Handle form submit
+    feedbackForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const name = feedbackForm.name.value.trim();
+        const message = feedbackForm.message.value.trim();
+
+        if (name && message) {
+            const newComment = { name, message, date: new Date().toLocaleString() };
+            comments.push(newComment);
+            localStorage.setItem("comments", JSON.stringify(comments));
+
+            renderComments();
+
+            feedbackForm.reset();
+            charCount.textContent = 0;
+        }
+    });
+
+    // ✅ Render comments
+    function renderComments() {
+        commentsList.innerHTML = "";
+        comments.forEach(comment => {
+            const div = document.createElement("div");
+            div.className = "comment-item";
+            div.innerHTML = `<strong>${comment.name}</strong> <small>(${comment.date})</small><p>${comment.message}</p>`;
+            commentsList.prepend(div);
+        });
+        commentCount.textContent = `${comments.length} Comment${comments.length !== 1 ? 's' : ''}`;
+    }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const galleryImages = document.querySelectorAll(".gallery-container img");
+    let current = 0;
+
+    function showNextImage() {
+        galleryImages.forEach(img => img.classList.remove("active"));
+        galleryImages[current].classList.add("active");
+        current = (current + 1) % galleryImages.length;
+    }
+
+    setInterval(showNextImage, 3000); // Change image every 3 seconds
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const galleryItems = document.querySelectorAll(".gallery-container img, .gallery-container video");
+    let current = 0;
+
+    function showNextItem() {
+        galleryItems.forEach(item => item.classList.remove("active"));
+        galleryItems[current].classList.add("active");
+        current = (current + 1) % galleryItems.length;
+    }
+
+    setInterval(showNextItem, 4000); // 4 seconds per item
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const expSlides = document.querySelectorAll(".experience-slideshow img");
+    let expIndex = 0;
+
+    function showExperienceSlide() {
+        expSlides.forEach(img => img.classList.remove("active"));
+        expSlides[expIndex].classList.add("active");
+        expIndex = (expIndex + 1) % expSlides.length;
+    }
+
+    setInterval(showExperienceSlide, 3000);
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const qualitySlides = document.querySelectorAll(".quality-slideshow img");
+    let qualityIndex = 0;
+
+    function showQualitySlide() {
+        qualitySlides.forEach(img => img.classList.remove("active"));
+        qualitySlides[qualityIndex].classList.add("active");
+        qualityIndex = (qualityIndex + 1) % qualitySlides.length;
+    }
+
+    setInterval(showQualitySlide, 3000);
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const headings = [
+        "Building Ghana’s Future",
+        "Engineering Excellence in Every Project",
+        "Sustainable Solutions for a Better Tomorrow"
+    ];
+
+    const texts = [
+        "Trusted partner for construction, engineering, and sustainable building solutions.",
+        "Delivering innovative infrastructure and top-quality workmanship across Ghana.",
+        "Creating eco-friendly, durable, and cost-effective construction solutions."
+    ];
+
+    let index = 0;
+    const headingEl = document.getElementById("hero-heading");
+    const textEl = document.getElementById("hero-text");
+
+    function changeText() {
+        headingEl.classList.add("fade-out");
+        textEl.classList.add("fade-out");
+
+        setTimeout(() => {
+            index = (index + 1) % headings.length;
+            headingEl.textContent = headings[index];
+            textEl.textContent = texts[index];
+
+            headingEl.classList.remove("fade-out");
+            textEl.classList.remove("fade-out");
+        }, 800); // match CSS transition
+    }
+
+    setInterval(changeText, 2000); // 2 seconds per slide
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const hamburger = document.getElementById("hamburger");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+
+    hamburger.addEventListener("click", () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!hamburger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.style.display = "none";
+        }
+    });
+});
+</script>
+</body>
+</html>

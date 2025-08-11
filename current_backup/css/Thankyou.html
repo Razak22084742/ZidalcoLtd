@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <link rel="stylesheet" href="css/style.css">
+<script src="../assets/js/script.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - Zidalco Company Limited</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">Zidalco</div>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Thank You Section -->
+    <section class="thankyou">
+        <div class="container">
+            <h1>Thank You!</h1>
+            <p>Your message has been sent successfully. We’ll get back to you soon.</p>
+            <p>You will be redirected to the Home Page in <span id="countdown">5</span> seconds...</p>
+            <a href="index.html" class="btn">Return to Home</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+    <p>&copy; 2025 Zidalco Company Limited | All Rights Reserved</p>
+    <p>
+        <a href="index.html">Home</a> | 
+        <a href="about.html">About</a> | 
+        <a href="services.html">Services</a> | 
+        <a href="portfolio.html">Portfolio</a> | 
+        <a href="contact.html">Contact</a>
+    </p>
+    <p>Email: zidalcoltd@gmail.com | Phone: +233 248607920</p>
+</footer>
+
+    <script>
+        // Countdown and Redirect
+        let timeLeft = 5;
+        const countdownEl = document.getElementById('countdown');
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdownEl.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                window.location.href = "index.html"; // ✅ Redirect to Home
+            }
+        }, 1000);
+    </script>
+
+    <script src="../assets/js/script.js"></script>
+</body>
+</html>
+<section class="thankyou fade-in">...</section>

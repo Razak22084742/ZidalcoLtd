@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Test - Zidalco</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            color: #006400;
+            border-bottom: 2px solid #006400;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background: #006400;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #004d00;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { border-left: 4px solid #28a745; }
+        .error { border-left: 4px solid #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>Backend API Test Page</h1>
+    <p>Use this page to test the backend APIs before integrating with the main site.</p>
+
+    <!-- Feedback Test -->
+    <div class="test-section">
+        <h2>Test Customer Feedback API</h2>
+        <form id="feedbackTestForm">
+            <div class="form-group">
+                <label for="feedbackName">Name:</label>
+                <input type="text" id="feedbackName" name="name" value="Test User" required>
+            </div>
+            <div class="form-group">
+                <label for="feedbackMessage">Message:</label>
+                <textarea id="feedbackMessage" name="message" rows="4" required>This is a test feedback message from the test page.</textarea>
+            </div>
+            <button type="submit">Submit Feedback</button>
+        </form>
+        <div id="feedbackResult" class="result" style="display: none;"></div>
+    </div>
+
+    <!-- Email Test -->
+    <div class="test-section">
+        <h2>Test Email API</h2>
+        <form id="emailTestForm">
+            <div class="form-group">
+                <label for="senderName">Sender Name:</label>
+                <input type="text" id="senderName" name="sender_name" value="Test User" required>
+            </div>
+            <div class="form-group">
+                <label for="senderEmail">Sender Email:</label>
+                <input type="email" id="senderEmail" name="sender_email" value="test@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="senderPhone">Sender Phone:</label>
+                <input type="tel" id="senderPhone" name="sender_phone" value="+233123456789" required>
+            </div>
+            <div class="form-group">
+                <label for="recipientEmail">Recipient Email:</label>
+                <input type="email" id="recipientEmail" name="recipient_email" value="admin@zidalco.com" required>
+            </div>
+            <div class="form-group">
+                <label for="emailMessage">Message:</label>
+                <textarea id="emailMessage" name="message" rows="4" required>This is a test email message from the test page.</textarea>
+            </div>
+            <button type="submit">Send Email</button>
+        </form>
+        <div id="emailResult" class="result" style="display: none;"></div>
+    </div>
+
+    <!-- Get Feedback Test -->
+    <div class="test-section">
+        <h2>Test Get Feedback API</h2>
+        <button onclick="testGetFeedback()">Fetch All Feedback</button>
+        <div id="getFeedbackResult" class="result" style="display: none;"></div>
+    </div>
+
+    <!-- Admin Auth Test -->
+    <div class="test-section">
+        <h2>Test Admin Authentication API</h2>
+        <form id="adminTestForm">
+            <div class="form-group">
+                <label for="adminEmail">Email:</label>
+                <input type="email" id="adminEmail" name="email" value="admin@zidalco.com" required>
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">Password:</label>
+                <input type="password" id="adminPassword" name="password" value="admin123" required>
+            </div>
+            <button type="submit">Test Login</button>
+        </form>
+        <div id="adminResult" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Feedback Test
+        document.getElementById('feedbackTestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const resultDiv = document.getElementById('feedbackResult');
+            
+            try {
+                const response = await fetch('api/submit_feedback.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: document.getElementById('feedbackName').value,
+                        message: document.getElementById('feedbackMessage').value
+                    })
+                });
+                
+                const data = await response.json();
+                resultDiv.style.display = 'block';
+                resultDiv.className = `result ${data.success ? 'success' : 'error'}`;
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        // Email Test
+        document.getElementById('emailTestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const resultDiv = document.getElementById('emailResult');
+            
+            try {
+                const response = await fetch('api/send_email.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sender_name: document.getElementById('senderName').value,
+                        sender_email: document.getElementById('senderEmail').value,
+                        sender_phone: document.getElementById('senderPhone').value,
+                        recipient_email: document.getElementById('recipientEmail').value,
+                        message: document.getElementById('emailMessage').value
+                    })
+                });
+                
+                const data = await response.json();
+                resultDiv.style.display = 'block';
+                resultDiv.className = `result ${data.success ? 'success' : 'error'}`;
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        // Get Feedback Test
+        async function testGetFeedback() {
+            const resultDiv = document.getElementById('getFeedbackResult');
+            
+            try {
+                const response = await fetch('api/get_feedback.php');
+                const data = await response.json();
+                
+                resultDiv.style.display = 'block';
+                resultDiv.className = `result ${data.success ? 'success' : 'error'}`;
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        // Admin Auth Test
+        document.getElementById('adminTestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const resultDiv = document.getElementById('adminResult');
+            
+            try {
+                const response = await fetch('api/admin_auth.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'login',
+                        email: document.getElementById('adminEmail').value,
+                        password: document.getElementById('adminPassword').value
+                    })
+                });
+                
+                const data = await response.json();
+                resultDiv.style.display = 'block';
+                resultDiv.className = `result ${data.success ? 'success' : 'error'}`;
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

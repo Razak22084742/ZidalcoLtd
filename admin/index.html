@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zidalco Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginSection" class="login-section">
+        <div class="login-container">
+            <div class="login-header">
+                <img src="../Images/logo.jpg" alt="Zidalco Logo" class="login-logo">
+                <h1>Zidalco Admin</h1>
+                <p>Sign in to your admin account</p>
+            </div>
+            
+            <div class="login-tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+            
+            <!-- Signup Form -->
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="dashboard-section hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../Images/logo.jpg" alt="Zidalco Logo" class="sidebar-logo">
+                <h3>Zidalco Admin</h3>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#feedback" class="nav-item" data-section="feedback">
+                    <i class="fas fa-comments"></i>
+                    <span>Feedback</span>
+                    <span class="badge" id="feedbackBadge">0</span>
+                </a>
+                <a href="#emails" class="nav-item" data-section="emails">
+                    <i class="fas fa-envelope"></i>
+                    <span>Emails</span>
+                    <span class="badge" id="emailBadge">0</span>
+                </a>
+                <a href="#notifications" class="nav-item" data-section="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                    <span class="badge" id="notificationBadge">0</span>
+                </a>
+                <a href="#settings" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button id="sidebarToggle" class="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 id="pageTitle">Dashboard</h2>
+                </div>
+                
+                <div class="top-bar-right">
+                    <div class="admin-info">
+                        <span id="adminName">Admin</span>
+                        <img src="../Images/logo.jpg" alt="Admin" class="admin-avatar">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="content-section active">
+                    <div class="dashboard-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="totalFeedback">0</h3>
+                                <p>Total Feedback</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="totalEmails">0</h3>
+                                <p>Total Emails</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-eye-slash"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="unreadFeedback">0</h3>
+                                <p>Unread Feedback</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-inbox"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="unreadEmails">0</h3>
+                                <p>Unread Emails</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div id="recentActivity" class="activity-list">
+                            <!-- Recent activity will be loaded here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Feedback Section -->
+                <section id="feedback" class="content-section">
+                    <div class="section-header">
+                        <h3>Customer Feedback</h3>
+                        <div class="section-actions">
+                            <select id="feedbackStatusFilter">
+                                <option value="">All Status</option>
+                                <option value="new">New</option>
+                                <option value="replied">Replied</option>
+                                <option value="resolved">Resolved</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="refreshFeedback()">
+                                <i class="fas fa-refresh"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="feedbackList" class="data-list">
+                        <!-- Feedback items will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Emails Section -->
+                <section id="emails" class="content-section">
+                    <div class="section-header">
+                        <h3>Contact Emails</h3>
+                        <div class="section-actions">
+                            <select id="emailStatusFilter">
+                                <option value="">All Status</option>
+                                <option value="sent">Sent</option>
+                                <option value="replied">Replied</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="refreshEmails()">
+                                <i class="fas fa-refresh"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="emailList" class="data-list">
+                        <!-- Email items will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Notifications Section -->
+                <section id="notifications" class="content-section">
+                    <div class="section-header">
+                        <h3>Notifications</h3>
+                        <button class="btn btn-outline" onclick="markAllAsRead()">
+                            Mark All as Read
+                        </button>
+                    </div>
+                    
+                    <div id="notificationList" class="notification-list">
+                        <!-- Notifications will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="content-section">
+                    <div class="section-header">
+                        <h3>Admin Settings</h3>
+                    </div>
+                    
+                    <div class="settings-content">
+                        <div class="setting-group">
+                            <h4>Profile Information</h4>
+                            <form id="profileForm" class="settings-form">
+                                <div class="form-group">
+                                    <label for="profileName">Full Name</label>
+                                    <input type="text" id="profileName" value="">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profileEmail">Email</label>
+                                    <input type="email" id="profileEmail" value="" readonly>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Profile</button>
+                            </form>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <h4>Change Password</h4>
+                            <form id="passwordForm" class="settings-form">
+                                <div class="form-group">
+                                    <label for="currentPassword">Current Password</label>
+                                    <input type="password" id="currentPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPassword">New Password</label>
+                                    <input type="password" id="newPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmNewPassword">Confirm New Password</label>
+                                    <input type="password" id="confirmNewPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Change Password</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Reply Modal -->
+    <div id="replyModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="replyModalTitle">Reply to Message</h3>
+                <button class="modal-close" onclick="closeReplyModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="replyModalContent">
+                    <!-- Original message content will be shown here -->
+                </div>
+                <div class="form-group">
+                    <label for="replyMessage">Your Reply</label>
+                    <textarea id="replyMessage" rows="5" placeholder="Type your reply here..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeReplyModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="sendReply()">Send Reply</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

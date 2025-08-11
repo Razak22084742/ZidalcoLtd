@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Zidalco Company Limited</title>
+    <link rel="stylesheet" href="css/Style.css">
+    <!-- Favicon removed to prevent 404 error -->
+</head>
+<body>
+
+    <!-- ✅ Header -->
+   <header>
+    <div class="logo">
+        <img src="Images/logo.jpg" alt="Zidalco Logo" class="logo-img">
+        <span class="logo-text">Zidalco</span>
+    </div>
+
+    <!-- Regular Navigation (Always Visible on Header) -->
+    <nav class="main-nav">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hamburger Icon -->
+    <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+    </div>
+
+    <!-- Dropdown Menu -->
+    <nav id="dropdown-menu">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+
+            <li class="has-submenu">
+                <a href="about.html">About Us</a>
+                <ul class="submenu">
+                    <li><a href="about.html#mission">Mission</a></li>
+                    <li><a href="about.html#vision">Vision</a></li>
+                </ul>
+            </li>
+
+            <li class="has-submenu">
+                <a href="services.html">Services</a>
+                <ul class="submenu">
+                    <li><a href="building.html">Building Construction</a></li>
+                    <li><a href="civil.html">Civil Engineering</a></li>
+                    <li><a href="design.html">Architectural Design</a></li>
+                    <li><a href="renovations.html">Renovations</a></li>
+                    <li><a href="project.html">Project Management</a></li>
+                    <li><a href="consulting.html">Architectural Design</a></li>
+                </ul>
+            </li>
+
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+    <!-- Portfolio Hero -->
+    <section class="page-hero portfolio-hero">
+        <img src="Images/portfolio2.png" alt="Portfolio Background" class="hero-bg">
+        <div class="hero-overlay">
+            <h1>Our Portfolio</h1>
+            <p>Showcasing Excellence in Construction</p>
+        </div>
+    </section>
+
+    
+    <!-- Portfolio Section -->
+    <section class="portfolio">
+        <div class="container">
+            <h2>Featured Projects</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="residential">Residential</button>
+                <button class="filter-btn" data-filter="commercial">Commercial</button>
+                <button class="filter-btn" data-filter="civil">Civil Engineering</button>
+            </div>
+
+            <div class="portfolio-grid">
+                <div class="portfolio-item residential">
+                    <img src="Images/residence1.jpg" alt="Residential Project">
+                    <div class="portfolio-info">
+                        <h3>Residential Complex</h3>
+                        <p>Modern residential development with sustainable materials.</p>
+                    </div>
+                </div>
+                <div class="portfolio-item commercial">
+                    <img src="Images/office1.jpg" alt="Commercial Office Space">                    <div class="portfolio-info">
+                        <h3>Commercial Office Space</h3>
+                        <p>Luxury interior finish for a premium office environment.</p>
+                    </div>
+                </div>
+                <div class="portfolio-item civil">
+                    <img src="Images/bridges1.jpg" alt="Civil Engineering Project">
+                    <div class="portfolio-info">
+                        <h3>Road & Bridge Construction</h3>
+                        <p>Durable civil engineering project improving connectivity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!--  Slideshow Section -->
+    <section class="before-after-wrapper">
+        <div class="slideshow-container before">
+            <h2></h2>
+            <div class="slideshow">
+                <button class="prev" onclick="changeSlide('before', -1)">&#10094;</button>
+                <div class="slides">
+                                            <img src="Images/before1.jpg" class="active" alt="">
+                        <img src="Images/before2.jpg" alt="">
+                        <img src="Images/before3.jpg" alt="">
+                        <img src="Images/before4.jpg" alt="">
+                </div>
+                <button class="next" onclick="changeSlide('before', 1)">&#10095;</button>
+            </div>
+        </div>
+
+        <div class="slideshow-container after">
+            <h2></h2>
+            <div class="slideshow">
+                <button class="prev" onclick="changeSlide('after', -1)">&#10094;</button>
+                <div class="slides">
+                                            <img src="Images/after1.jpg" class="" alt="After Project 1">
+                        <img src="Images/after2.jpg" alt="">
+                        <img src="Images/after3.jpg" alt="">
+                        <img src="Images/after5.jpg" alt="">
+                        <img src="Images/after6.jpg" alt="">
+                </div>
+                <button class="next" onclick="changeSlide('after', 1)">&#10095;</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="contact-cta">
+        <h2>Want to see more of our work?</h2>
+        <a href="contact.html" class="btn">Contact Us Today</a>
+    </section>
+
+   <!-- ✅ Footer -->
+    <footer>
+  <p>&copy; 2025 Zidalco Company Limited | All Rights Reserved</p>
+  <p>Email: zidalcoltd@gmail.com | Phone: +233 248607920</p>
+</footer>
+
+<!-- Bottom Navigation -->
+<div class="app-bottom-nav">
+  <a href="index.html" class="tab-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 3l9 8h-3v10h-4v-6H10v6H6V11H3z"/>
+    </svg>
+  </a>
+
+  <a href="about.html" class="tab-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 2a10 10 0 100 20 10 10 0 000-20zm.9 15h-1.8v-6h1.8v6zm0-8h-1.8V7h1.8v2z"/>
+    </svg>
+  </a>
+
+  <a href="services.html" class="tab-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/>
+    </svg>
+  </a>
+
+  <a href="portfolio.html" class="tab-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10-2h4v2h-4V4zm10 14H4V8h16v10z"/>
+    </svg>
+  </a>
+
+  <a href="contact.html" class="tab-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M6.6 10.8a15.9 15.9 0 006.6 6.6l2.2-2.2c.3-.3.8-.4 1.2-.2 1.3.5 2.7.8 4.1.8.7 0 1.3.6 1.3 1.3V21c0 .7-.6 1.3-1.3 1.3C10.7 22.3 1.7 13.3 1.7 3.3 1.7 2.6 2.3 2 3 2h3.5c.7 0 1.3.6 1.3 1.3 0 1.4.3 2.8.8 4.1.2.4.1.9-.2 1.2l-2.2 2.2z"/>
+    </svg>
+  </a>
+</div>
+
+
+    <!-- ✅ JS for slideshow -->
+   <script>
+    let currentIndex = {before: 0, after: 0};
+
+    function changeSlide(type, direction) {
+        var slides = document.querySelectorAll('.' + type + ' .slides img');
+        slides[currentIndex[type]].classList.remove('active');
+        currentIndex[type] = (currentIndex[type] + direction + slides.length) % slides.length;
+        slides[currentIndex[type]].classList.add('active');
+    }
+
+    function autoSlide(type) {
+        setInterval(function() {
+            changeSlide(type, 1);
+        }, 3000);
+    }
+
+    window.onload = function() {
+        autoSlide('before');
+        autoSlide('after');
+    };
+</script>
+<script>
+    // Portfolio filter buttons
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            const filter = button.getAttribute('data-filter');
+
+            portfolioItems.forEach(item => {
+                if (filter === 'all' || item.classList.contains(filter)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+
+
+    <!-- ✅ CSS for side-by-side layout -->
+    <style>
+        .before-after-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 40px;
+            background: #f9f9f9;
+        }
+        .slideshow-container {
+            flex: 1;
+            text-align: center;
+        }
+        .slideshow {
+            position: relative;
+            max-width: 100%;
+            overflow: hidden;
+        }
+        .slides img {
+            width: 100%;
+            display: none;
+            border-radius: 8px;
+        }
+        .slides img.active {
+            display: block;
+        }
+        .slideshow button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 8px 12px;
+        }
+        .slideshow .prev { left: 10px; }
+        .slideshow .next { right: 10px; }
+        .before-after-wrapper h2 {
+            color: #006400;
+            margin-bottom: 10px;
+        }
+    </style>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            const filter = button.getAttribute('data-filter');
+
+            portfolioItems.forEach(item => {
+                if (filter === 'all' || item.classList.contains(filter)) {
+                    item.style.display = 'flex';  // ✅ Keep grid layout
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const hamburger = document.getElementById("hamburger");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+
+    hamburger.addEventListener("click", () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!hamburger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.style.display = "none";
+        }
+    });
+});
+</script>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("load_portfolio.php")
+        .then(response => response.json())
+        .then(data => {
+            const container = document.querySelector(".portfolio-grid"); // Change to your portfolio grid class
+            data.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "portfolio-card";
+                card.innerHTML = `
+                    <img src="${item.image_url || 'Images/default.jpg'}" alt="${item.title}">
+                    <h3>${item.title}</h3>
+                    <p>${item.description}</p>
+                `;
+                container.appendChild(card);
+            });
+        });
+});
+</script>
+
+</body>
+</html>
+

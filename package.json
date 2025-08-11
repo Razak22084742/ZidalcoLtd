@@ -1,0 +1,31 @@
+{
+  "name": "zidalco-backend",
+  "version": "1.0.0",
+  "description": "Zidalco Company Limited Backend API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "echo 'No build step required'",
+    "vercel-build": "echo 'Vercel build completed'"
+  },
+  "keywords": ["zidalco", "backend", "api", "vercel"],
+  "author": "Zidalco Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "axios": "^1.6.0",
+    "nodemailer": "^6.9.7",
+    "@supabase/supabase-js": "^2.45.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

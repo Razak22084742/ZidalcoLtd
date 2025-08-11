@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Zidalco Company Limited</title>
+    <link rel="stylesheet" href="css/Style.css">
+    <link rel="icon" type="image/png" href="Images/favicon.png">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Explore Zidalco Company Limited's professional construction and engineering services in Ghana.">
+    <meta name="keywords" content="Zidalco, Services, Construction, Engineering, Civil Works, Ghana">
+    <meta name="author" content="Zidalco Company Limited">
+</head>
+<body>
+
+   <!-- ✅ Header -->
+   <header>
+    <div class="logo">
+        <img src="Images/logo.jpg" alt="Zidalco Logo" class="logo-img">
+        <span class="logo-text">Zidalco</span>
+    </div>
+
+    <!-- Regular Navigation (Always Visible on Header) -->
+    <nav class="main-nav">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hamburger Icon -->
+    <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+    </div>
+
+    <!-- Dropdown Menu -->
+    <nav id="dropdown-menu">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+
+            <li class="has-submenu">
+                <a href="about.html">About Us</a>
+                <ul class="submenu">
+                    <li><a href="about.html#mission">Mission</a></li>
+                    <li><a href="about.html#vision">Vision</a></li>
+                </ul>
+            </li>
+
+            <li class="has-submenu">
+                <a href="services.html">Services</a>
+                <ul class="submenu">
+                    <li><a href="building.html">Building Construction</a></li>
+                    <li><a href="civil.html">Civil Engineering</a></li>
+                    <li><a href="design.html">Architectural Design</a></li>
+                    <li><a href="renovations.html">Renovations</a></li>
+                    <li><a href="project.html">Project Management</a></li>
+                    <li><a href="consulting.html">Architectural Design</a></li>
+                </ul>
+            </li>
+
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+   <!-- Services Hero -->
+<section class="page-hero services-hero">
+            <img src="Images/service1.png" alt="Services Background" class="hero-bg">
+    <div class="hero-overlay">
+        <h1>Our Services</h1>
+        <p>Building Ghana’s future with innovation and excellence</p>
+    </div>
+</section>
+
+
+    <!-- Services Grid -->
+  <section class="services-page">
+    <div class="container">
+        <h2>What We Offer</h2>
+        <div class="services-grid">
+
+            <!-- Building Construction -->
+            <div class="service-card">
+                <a href="building.html">
+<img src="Images/building1.png" alt="Building Construction">
+                    <h3>Building Construction</h3>
+                    <p>Residential, commercial, and industrial buildings with top-quality materials and standards.</p>
+                </a>
+            </div>
+
+            <!-- Civil Engineering -->
+            <div class="service-card">
+                <a href="civil.html">
+                <img src="Images/civil1.jpg" alt="Civil Engineering">
+                    <h3>Civil Engineering</h3>
+                    <p>Bridges, roads, and infrastructure projects that connect and strengthen communities.</p>
+                </a>
+            </div>
+
+            <!-- Architectural Design -->
+            <div class="service-card">
+                <a href="design.html">
+                <img src="Images/design1.jpg" alt="Architectural Design">
+                    <h3>Architectural Design</h3>
+                    <p>Creative and functional designs tailored to meet client needs with sustainable solutions.</p>
+                </a>
+            </div>
+
+            <!-- Renovations -->
+            <div class="service-card">
+                <a href="renovations.html">
+                <img src="Images/renovation.jpg" alt="Renovations">
+                    <h3>Renovations</h3>
+                    <p>Transform existing structures with modern updates and structural improvements.</p>
+                </a>
+            </div>
+
+            <!-- Project Management -->
+            <div class="service-card">
+                <a href="project.html">
+                    <img src="Images/project1.jpg" alt="Project Management">
+                    <h3>Project Management</h3>
+                    <p>End-to-end management to ensure timely, cost-effective, and quality delivery of projects.</p>
+                </a>
+            </div>
+
+            <!-- Consulting -->
+            <div class="service-card">
+                <a href="consulting.html">
+                <img src="Images/consulting1.jpg" alt="Consulting">
+                    <h3>Construction Consulting</h3>
+                    <p>Expert advice and guidance for construction planning, budgeting, and execution.</p>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+    <!-- CTA -->
+    <section class="contact-cta">
+        <h2>Ready to start your project?</h2>
+        <a href="contact.html" class="btn">Contact Us Now</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Zidalco Company Limited | All Rights Reserved</p>
+        <p>
+            <a href="index.html">Home</a> | 
+            <a href="about.html">About</a> | 
+            <a href="services.html">Services</a> | 
+            <a href="portfolio.html">Portfolio</a> | 
+            <a href="contact.html">Contact</a>
+        </p>
+        <p>Email: zidalcoltd@gmail.com | Phone: +233 248607920</p>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const hamburger = document.getElementById("hamburger");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+
+    hamburger.addEventListener("click", () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!hamburger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.style.display = "none";
+        }
+    });
+});
+</script>
+</body>
+</html>

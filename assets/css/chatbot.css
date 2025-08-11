@@ -1,0 +1,90 @@
+/* Chatbot Widget Styles */
+.chatbot-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  cursor: pointer;
+  z-index: 3000;
+}
+.chatbot-panel {
+  position: fixed;
+  bottom: 92px;
+  right: 24px;
+  width: 340px;
+  max-height: 60vh;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(2,6,23,0.2);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 3000;
+}
+.chatbot-panel.open { display: flex; }
+.chatbot-header {
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chatbot-header h4 { font-size: 14px; font-weight: 600; }
+.chatbot-body {
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+  background: #f8fafc;
+}
+.chatbot-msg { display: flex; margin-bottom: 10px; }
+.chatbot-msg.bot { justify-content: flex-start; }
+.chatbot-msg.user { justify-content: flex-end; }
+.chatbot-bubble {
+  max-width: 80%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.chatbot-msg.bot .chatbot-bubble {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+.chatbot-msg.user .chatbot-bubble {
+  background: #3b82f6;
+  color: #fff;
+}
+.chatbot-footer {
+  padding: 10px;
+  background: #fff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 8px;
+}
+.chatbot-input {
+  flex: 1;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.chatbot-send {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.chatbot-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chatbot-chip { background: #eef2ff; color: #3730a3; border: none; padding: 6px 8px; border-radius: 999px; font-size: 12px; cursor: pointer; }
