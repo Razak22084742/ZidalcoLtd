@@ -505,6 +505,9 @@ body {
     max-width: 400px;
 }
 
+/* Content section minor tweaks */
+#content .data-content img { display:block; }
+
 /* Modal */
 .modal {
     position: fixed;

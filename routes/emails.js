@@ -132,6 +132,9 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// DELETE /api/emails/:id (admin via admin router, but allow here too if needed)
+// NOTE: Deletion of emails is handled in protected admin routes
+
 // Update email status
 router.patch('/:id/status', async (req, res) => {
   try {

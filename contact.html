@@ -21,6 +21,16 @@
 
     <!-- ✅ Google reCAPTCHA v3 -->
     <script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY"></script>
+    
+    <!-- ✅ EmailJS (client-side email sending) -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+    (function(){
+        if (window.emailjs && typeof emailjs.init === 'function') {
+            emailjs.init({ publicKey: "J3BTc9y4aqgvlHlkR" });
+        }
+    })();
+    </script>
 </head>
 <body>
 
@@ -201,7 +211,7 @@
             }
         });
         
-        // Contact form handling
+        // Contact form handling (save to backend + send via EmailJS)
         const contactForm = document.getElementById('contactForm');
         
         contactForm.addEventListener('submit', async function(e) {
@@ -211,16 +221,14 @@
             const submitButton = contactForm.querySelector('button[type="submit"]');
             const originalText = submitButton.textContent;
             
-            // Disable button and show loading
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
             
             try {
-                const response = await fetch('/api/emails/send', {
+                // 1) Save to backend for admin visibility
+                const savePromise = fetch('/api/emails/send', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         name: formData.get('name'),
                         email: formData.get('email'),
@@ -228,21 +236,45 @@
                         recipient_email: formData.get('recipient_email'),
                         message: formData.get('message')
                     })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showMessage('Email sent successfully!', 'success');
+                }).then(r => r.json()).catch(() => ({ success: false }));
+
+                // 2) Send actual email via EmailJS (client-side delivery)
+                const emailJsPromise = (async () => {
+                    if (!window.emailjs || typeof emailjs.send !== 'function') return { ok: false };
+                    const params = {
+                        name: formData.get('name'),
+                        email: formData.get('email'),
+                        reply_to: formData.get('email'),
+                        phone: formData.get('phone'),
+                        message: formData.get('message'),
+                        recipient_email: formData.get('recipient_email'),
+                        to_email: formData.get('recipient_email'),
+                        subject: `New Message from ${formData.get('name')}`
+                    };
+                    await emailjs.send('service_vxprigz', 'template_umpowaa', params);
+                    return { ok: true };
+                })();
+
+                const [saveResult, emailResult] = await Promise.allSettled([savePromise, emailJsPromise]);
+
+                const savedOk = saveResult.status === 'fulfilled' && saveResult.value && saveResult.value.success;
+                const mailedOk = emailResult.status === 'fulfilled' && emailResult.value && (emailResult.value.ok === true);
+
+                if (savedOk && mailedOk) {
+                    showMessage('Message sent and recorded!', 'success');
                     contactForm.reset();
+                } else if (mailedOk) {
+                    showMessage('Message sent! (recording failed, admin may not see it)', 'success');
+                    contactForm.reset();
+                } else if (savedOk) {
+                    showMessage('Saved for admin, but email delivery failed. We will follow up.', 'error');
                 } else {
-                    showMessage(data.message || 'Failed to send email', 'error');
+                    showMessage('Failed to send message. Please try again.', 'error');
                 }
             } catch (error) {
-                console.error('Error sending email:', error);
+                console.error('Error sending message:', error);
                 showMessage('Failed to send email. Please try again.', 'error');
             } finally {
-                // Re-enable button
                 submitButton.disabled = false;
                 submitButton.textContent = originalText;
             }

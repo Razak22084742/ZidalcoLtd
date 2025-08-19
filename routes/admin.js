@@ -3,6 +3,24 @@ const router = express.Router();
 const { supabaseRequest } = require('../utils/supabase');
 const { authMiddleware } = require('../middleware/auth');
 const { sendEmail } = require('../utils/notifications');
+const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
+
+// Upload storage (local uploads folder)
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  try { fs.mkdirSync(uploadsDir, { recursive: true }); } catch (_) {}
+}
+const storage = multer.diskStorage({
+  destination: function(_req, _file, cb) { cb(null, uploadsDir); },
+  filename: function(_req, file, cb) {
+    const ext = path.extname(file.originalname) || '';
+    const safe = Date.now() + '-' + Math.random().toString(36).slice(2) + ext;
+    cb(null, safe);
+  }
+});
+const upload = multer({ storage });
 
 // All routes here require Supabase auth
 router.use(authMiddleware);
@@ -282,6 +300,94 @@ router.get('/emails/:id', async (req, res) => {
   } catch (error) {
     console.error('Admin get email by ID error:', error);
     res.status(500).json({ error: true, message: 'Failed to fetch email' });
+  }
+});
+
+// DELETE /api/admin/emails/:id (soft delete)
+router.delete('/emails/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ error: true, message: 'Email ID is required' });
+    const result = await supabaseRequest(`emails?id=eq.${id}`, 'PATCH', { status: 'deleted', is_read: true });
+    if (result.status >= 200 && result.status < 300) {
+      return res.json({ success: true, message: 'Email removed' });
+    }
+    return res.status(500).json({ error: true, message: 'Failed to remove email' });
+  } catch (error) {
+    console.error('Delete email error:', error);
+    res.status(500).json({ error: true, message: 'Failed to remove email' });
+  }
+});
+
+// --------- Content Management ---------
+// GET /api/admin/contents
+router.get('/contents', async (req, res) => {
+  try {
+    const { id, location, slot, limit = 100, offset = 0 } = req.query;
+    let query = `contents?is_deleted=eq.false&order=created_at.desc&limit=${limit}&offset=${offset}`;
+    if (id) query += `&id=eq.${id}`;
+    if (location) query += `&location=eq.${location}`;
+    if (slot) query += `&slot=eq.${slot}`;
+    const result = await supabaseRequest(query, 'GET');
+    if (result.status === 200) return res.json({ success: true, contents: result.data });
+    return res.status(500).json({ error: true, message: 'Failed to fetch contents' });
+  } catch (error) {
+    console.error('List contents error:', error);
+    res.status(500).json({ error: true, message: 'Failed to fetch contents' });
+  }
+});
+
+// POST /api/admin/contents
+router.post('/contents', async (req, res) => {
+  try {
+    const { location, slot, title, body, image_url, is_published = true } = req.body || {};
+    if (!location || !slot) return res.status(400).json({ error: true, message: 'location and slot are required' });
+    const payload = { location, slot, title: title || null, body: body || null, image_url: image_url || null, is_published: Boolean(is_published) };
+    const result = await supabaseRequest('contents', 'POST', payload);
+    if (result.status >= 200 && result.status < 300) return res.json({ success: true, content: result.data?.[0] || payload });
+    return res.status(500).json({ error: true, message: 'Failed to create content' });
+  } catch (error) {
+    console.error('Create content error:', error);
+    res.status(500).json({ error: true, message: 'Failed to create content' });
+  }
+});
+
+// PATCH /api/admin/contents/:id
+router.patch('/contents/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const update = req.body || {};
+    const result = await supabaseRequest(`contents?id=eq.${id}`, 'PATCH', update);
+    if (result.status >= 200 && result.status < 300) return res.json({ success: true, content: result.data?.[0] || null });
+    return res.status(500).json({ error: true, message: 'Failed to update content' });
+  } catch (error) {
+    console.error('Update content error:', error);
+    res.status(500).json({ error: true, message: 'Failed to update content' });
+  }
+});
+
+// DELETE /api/admin/contents/:id (soft delete)
+router.delete('/contents/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await supabaseRequest(`contents?id=eq.${id}`, 'PATCH', { is_deleted: true, is_published: false });
+    if (result.status >= 200 && result.status < 300) return res.json({ success: true, message: 'Content removed' });
+    return res.status(500).json({ error: true, message: 'Failed to remove content' });
+  } catch (error) {
+    console.error('Delete content error:', error);
+    res.status(500).json({ error: true, message: 'Failed to remove content' });
+  }
+});
+
+// POST /api/admin/contents/upload (multipart form)
+router.post('/contents/upload', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: true, message: 'No file uploaded' });
+    const relPath = `/uploads/${req.file.filename}`;
+    return res.json({ success: true, url: relPath });
+  } catch (error) {
+    console.error('Upload content image error:', error);
+    res.status(500).json({ error: true, message: 'Failed to upload image' });
   }
 });
 

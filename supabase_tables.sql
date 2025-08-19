@@ -71,6 +71,20 @@ CREATE TABLE IF NOT EXISTS email_replies (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Site Content Table (for homepage/services managed content)
+CREATE TABLE IF NOT EXISTS contents (
+    id BIGSERIAL PRIMARY KEY,
+    location VARCHAR(50) NOT NULL,        -- e.g., 'home', 'services'
+    slot VARCHAR(100) NOT NULL,           -- e.g., 'announcement', 'home_message', 'services_message'
+    title VARCHAR(255) DEFAULT NULL,
+    body TEXT DEFAULT NULL,
+    image_url TEXT DEFAULT NULL,
+    is_published BOOLEAN DEFAULT TRUE,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_feedback_status ON feedback(status);
 CREATE INDEX IF NOT EXISTS idx_feedback_created ON feedback(created_at);
@@ -81,6 +95,8 @@ CREATE INDEX IF NOT EXISTS idx_emails_sender ON emails(sender_email);
 CREATE INDEX IF NOT EXISTS idx_admins_email ON admins(email);
 CREATE INDEX IF NOT EXISTS idx_admin_tokens_token ON admin_tokens(token);
 CREATE INDEX IF NOT EXISTS idx_admin_tokens_expires ON admin_tokens(expires_at);
+CREATE INDEX IF NOT EXISTS idx_contents_location ON contents(location);
+CREATE INDEX IF NOT EXISTS idx_contents_slot ON contents(slot);
 
 -- Enable Row Level Security
 ALTER TABLE feedback ENABLE ROW LEVEL SECURITY;
@@ -89,6 +105,7 @@ ALTER TABLE admins ENABLE ROW LEVEL SECURITY;
 ALTER TABLE admin_tokens ENABLE ROW LEVEL SECURITY;
 ALTER TABLE feedback_replies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE email_replies ENABLE ROW LEVEL SECURITY;
+ALTER TABLE contents ENABLE ROW LEVEL SECURITY;
 
 -- Create RLS policies (basic - you may want to customize these)
 -- Allow public access to insert feedback and emails
@@ -116,6 +133,12 @@ CREATE POLICY "Allow admins to read feedback_replies" ON feedback_replies
 
 CREATE POLICY "Allow admins to read email_replies" ON email_replies
     FOR SELECT USING (true);
+
+CREATE POLICY "Allow public read contents" ON contents
+    FOR SELECT USING (is_published = true AND is_deleted = false);
+
+CREATE POLICY "Allow admins manage contents" ON contents
+    FOR ALL USING (true) WITH CHECK (true);
 
 -- Allow admins to update feedback and emails
 CREATE POLICY "Allow admins to update feedback" ON feedback
@@ -156,6 +179,9 @@ CREATE TRIGGER update_emails_updated_at BEFORE UPDATE ON emails
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_admins_updated_at BEFORE UPDATE ON admins
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_contents_updated_at BEFORE UPDATE ON contents
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Insert a default admin user (password: admin123)

@@ -90,6 +90,17 @@
         .card h3 { margin-bottom: 10px; color: #006400; }
         .card p { color: #333; font-size: 0.95rem; }
     </style>
+    <script type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+(function(){
+  emailjs.init({
+    publicKey: "J3BTc9y4aqgvlHlkR",
+  });
+})();
+</script>
+<!-- removed stray script include -->
 </head>
 <body>
 
@@ -190,6 +201,13 @@
             </div>
             <a href="about.html" class="btn">Learn More About Us</a>
         </div>
+    </section>
+
+    <!-- Admin Announcement (dynamic) -->
+    <section id="admin-announcement" class="services" style="display:none;">
+        <h2 id="announcement-title"></h2>
+        <p id="announcement-body"></p>
+        <div id="announcement-image-wrapper" style="margin-top:12px;"><img id="announcement-image" style="max-width:360px;border-radius:8px;display:none;" /></div>
     </section>
 <!-- ✅ Picture Animation Section -->
 <!-- ✅ Picture & Video Animation Section -->
@@ -371,6 +389,27 @@
             supportSlides[sIndex].classList.add("active");
             sIndex = (sIndex + 1) % supportSlides.length;
         }, 3000);
+    });
+    </script>
+    <script>
+    // Load admin announcements for home (frontend-only, reads localStorage)
+    document.addEventListener('DOMContentLoaded', () => {
+        try {
+            const list = JSON.parse(localStorage.getItem('zidalco_contents') || '[]');
+            const items = list.filter(i => i.location === 'home' && i.slot === 'announcement' && !i.is_deleted && i.is_published);
+            if (items.length) {
+                const c = items[0];
+                const sec = document.getElementById('admin-announcement');
+                document.getElementById('announcement-title').textContent = c.title || 'Announcement';
+                document.getElementById('announcement-body').textContent = c.body || '';
+                if (c.image_url) {
+                    const img = document.getElementById('announcement-image');
+                    img.src = c.image_url; img.style.display = 'block';
+                }
+                sec.style.display = 'block';
+            }
+            window.addEventListener('storage', () => location.reload(), false);
+        } catch(_) {}
     });
     </script>
     <script>
@@ -668,6 +707,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
-<script src="menu.js"></script>
+<!-- removed missing menu.js include -->
 </body>
 </html>

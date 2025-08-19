@@ -5,6 +5,7 @@ class AdminDashboard {
         this.admin = JSON.parse(localStorage.getItem('admin_data') || '{}');
         this.currentSection = 'dashboard';
         this.notificationInterval = null;
+        this.useLocalContent = true; // Frontend-only CMS mode
         
         this.init();
     }
@@ -60,6 +61,35 @@ class AdminDashboard {
         
         document.getElementById('emailStatusFilter').addEventListener('change', () => {
             this.refreshEmails();
+        });
+
+        // Content form handlers
+        const contentImage = document.getElementById('contentImage');
+        if (contentImage) {
+            contentImage.addEventListener('change', (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    this.currentContentImageUrl = reader.result; // base64 data URL
+                    const img = document.getElementById('contentImagePreview');
+                    img.src = reader.result;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        const resetBtn = document.getElementById('resetContentForm');
+        if (resetBtn) resetBtn.addEventListener('click', () => this.resetContentForm());
+
+        const createBtn = document.getElementById('createContentBtn');
+        if (createBtn) createBtn.addEventListener('click', () => this.resetContentForm());
+
+        const contentForm = document.getElementById('contentForm');
+        if (contentForm) contentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveContent();
         });
         
         // Settings forms
@@ -149,7 +179,7 @@ class AdminDashboard {
     }
     
     checkAuth() {
-        if (this.token && this.admin.id) {
+        if (this.token) {
             this.showDashboard();
             this.loadDashboardData();
         } else {
@@ -194,6 +224,9 @@ class AdminDashboard {
                 break;
             case 'emails':
                 this.loadEmails();
+                break;
+            case 'content':
+                this.loadContentList();
                 break;
             case 'notifications':
                 this.loadNotifications();
@@ -436,11 +469,158 @@ class AdminDashboard {
                     <button class="btn btn-sm btn-outline" onclick="adminDashboard.markAsRead('email', ${email.id})">
                         <i class="fas fa-eye"></i> Mark Read
                     </button>
+                    <button class="btn btn-sm btn-danger" onclick="adminDashboard.removeEmail(${email.id})">
+                        <i class="fas fa-trash"></i> Remove
+                    </button>
                 </div>
             `;
             
             container.appendChild(item);
         });
+    }
+
+    async removeEmail(id) {
+        if (!confirm('Are you sure you want to remove this email?')) return;
+        try {
+            const response = await fetch(`/api/admin/emails/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${this.token}` }
+            });
+            const data = await response.json();
+            if (data.success) {
+                this.showSuccess('Email removed');
+                this.loadEmails();
+                this.loadDashboardData();
+            } else {
+                this.showError(data.message || 'Failed to remove');
+            }
+        } catch (e) {
+            this.showError('Failed to remove. Please try again.');
+        }
+    }
+
+    // -------- Content Management --------
+    async loadContentList() {
+        if (this.useLocalContent) {
+            const list = JSON.parse(localStorage.getItem('zidalco_contents') || '[]');
+            this.displayContentList(list.filter(i => !i.is_deleted));
+            return;
+        }
+        // fallback (not used in local mode)
+        try {
+            const res = await fetch('/api/admin/contents?limit=100', { headers: { 'Authorization': `Bearer ${this.token}` } });
+            const data = await res.json();
+            if (data.success) this.displayContentList(data.contents || []);
+        } catch (e) { console.error('Failed to load contents', e); }
+    }
+
+    displayContentList(list) {
+        const container = document.getElementById('contentList');
+        if (!container) return;
+        container.innerHTML = '';
+        if (!list || list.length === 0) {
+            container.innerHTML = '<div class="data-item"><p>No content yet.</p></div>';
+            return;
+        }
+        list.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'data-item';
+            div.innerHTML = `
+                <div class="data-header">
+                    <div class="data-title">${item.title || (item.slot + ' @ ' + item.location)}</div>
+                    <div class="data-meta">
+                        <span>${item.location}</span>
+                        <span>${item.slot}</span>
+                        <span>${this.formatTime(item.created_at)}</span>
+                        <span class="status-badge status-${item.is_published ? 'sent' : 'failed'}">${item.is_published ? 'published' : 'draft'}</span>
+                    </div>
+                </div>
+                <div class="data-content">
+                    ${item.image_url ? `<img src="${item.image_url}" style="max-width:140px; border-radius:8px; margin-bottom:8px;" />` : ''}
+                    ${item.body || ''}
+                </div>
+                <div class="data-actions">
+                    <button class="btn btn-sm btn-outline" onclick="adminDashboard.editContent(${item.id})"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="adminDashboard.deleteContent(${item.id})"><i class="fas fa-trash"></i> Remove</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    resetContentForm() {
+        this.currentContentId = null;
+        this.currentContentImageUrl = null;
+        document.getElementById('contentLocation').value = 'home';
+        document.getElementById('contentSlot').value = 'announcement';
+        document.getElementById('contentTitle').value = '';
+        document.getElementById('contentBody').value = '';
+        document.getElementById('contentPublished').checked = true;
+        const img = document.getElementById('contentImagePreview');
+        if (img) { img.src = ''; img.style.display = 'none'; }
+    }
+
+    editContent(id) {
+        const list = JSON.parse(localStorage.getItem('zidalco_contents') || '[]');
+        const item = list.find(i => i.id === id);
+        if (!item) return;
+        this.currentContentId = id;
+        document.getElementById('contentLocation').value = item.location || 'home';
+        document.getElementById('contentSlot').value = item.slot || 'announcement';
+        document.getElementById('contentTitle').value = item.title || '';
+        document.getElementById('contentBody').value = item.body || '';
+        document.getElementById('contentPublished').checked = !!item.is_published;
+        this.currentContentImageUrl = item.image_url || null;
+        const img = document.getElementById('contentImagePreview');
+        if (this.currentContentImageUrl) { img.src = this.currentContentImageUrl; img.style.display = 'block'; } else { img.src=''; img.style.display='none'; }
+    }
+
+    async fetchContentById(id){
+        const list = JSON.parse(localStorage.getItem('zidalco_contents') || '[]');
+        return list.find(i => i.id === id) || null;
+    }
+
+    async saveContent() {
+        const payload = {
+            location: document.getElementById('contentLocation').value,
+            slot: document.getElementById('contentSlot').value,
+            title: document.getElementById('contentTitle').value.trim() || null,
+            body: document.getElementById('contentBody').value.trim() || null,
+            image_url: this.currentContentImageUrl || null,
+            is_published: document.getElementById('contentPublished').checked,
+            is_deleted: false,
+            created_at: new Date().toISOString()
+        };
+        const list = JSON.parse(localStorage.getItem('zidalco_contents') || '[]');
+        if (this.currentContentId) {
+            const idx = list.findIndex(i => i.id === this.currentContentId);
+            if (idx >= 0) list[idx] = { ...list[idx], ...payload };
+        } else {
+            const newId = Date.now();
+            list.unshift({ id: newId, ...payload });
+        }
+        localStorage.setItem('zidalco_contents', JSON.stringify(list));
+        this.broadcastContentChange();
+        this.showSuccess('Content saved');
+        this.resetContentForm();
+        this.loadContentList();
+    }
+
+    async deleteContent(id) {
+        if (!confirm('Remove this content?')) return;
+        const list = JSON.parse(localStorage.getItem('zidalco_contents') || '[]');
+        const idx = list.findIndex(i => i.id === id);
+        if (idx >= 0) {
+            list[idx].is_deleted = true;
+            localStorage.setItem('zidalco_contents', JSON.stringify(list));
+            this.broadcastContentChange();
+            this.showSuccess('Content removed');
+            this.loadContentList();
+        }
+    }
+
+    broadcastContentChange() {
+        try { localStorage.setItem('zidalco_contents_last_change', String(Date.now())); } catch(_) {}
     }
     
     async loadNotifications() {
@@ -609,7 +789,7 @@ class AdminDashboard {
         try {
             const actionUrl = this.currentReplyType === 'feedback' ? '/api/admin/reply-feedback' : '/api/admin/reply-email';
             const idField = this.currentReplyType === 'feedback' ? 'feedback_id' : 'email_id';
-            
+
             const response = await fetch(actionUrl, {
                 method: 'POST',
                 headers: {
@@ -621,21 +801,75 @@ class AdminDashboard {
                     reply_message: replyMessage
                 })
             });
-            
+
             const data = await response.json();
-            
-            if (data.success) {
-                this.showSuccess('Reply sent successfully!');
-                this.closeReplyModal();
-                if (this.currentSection === 'feedback') this.loadFeedback();
-                if (this.currentSection === 'emails') this.loadEmails();
-                this.loadDashboardData();
+
+            // Fallback: send via EmailJS to the original sender if backend couldn't email
+            if (!data.success) {
+                await this.sendReplyViaEmailJS(replyMessage);
+                this.showSuccess('Reply sent via EmailJS!');
             } else {
-                this.showError(data.message);
+                this.showSuccess('Reply sent successfully!');
             }
+
+            this.closeReplyModal();
+            if (this.currentSection === 'feedback') this.loadFeedback();
+            if (this.currentSection === 'emails') this.loadEmails();
+            this.loadDashboardData();
         } catch (error) {
-            this.showError('Failed to send reply. Please try again.');
+            // Try EmailJS as last resort
+            try {
+                await this.sendReplyViaEmailJS(replyMessage);
+                this.showSuccess('Reply sent via EmailJS!');
+                this.closeReplyModal();
+            } catch (e) {
+                this.showError('Failed to send reply. Please try again.');
+            }
         }
+    }
+
+    async sendReplyViaEmailJS(replyMessage){
+        if (!window.emailjs || typeof emailjs.send !== 'function') throw new Error('EmailJS not available');
+
+        // Fetch the latest details to know recipient
+        if (this.currentReplyType === 'email') {
+            const res = await fetch(`/api/admin/emails/${this.currentReplyId}`, { headers: { 'Authorization': `Bearer ${this.token}` } });
+            const data = await res.json();
+            const email = data && (data.email || data.emails);
+            if (!email) throw new Error('Email details not found');
+
+            const params = {
+                name: 'Zidalco Admin',
+                email: 'no-reply@zidalco.com',
+                reply_to: 'no-reply@zidalco.com',
+                to_email: email.sender_email,
+                recipient_email: email.sender_email,
+                subject: `Reply from Zidalco Admin`,
+                message: replyMessage
+            };
+            await emailjs.send('service_vxprigz','template_umpowaa', params);
+            return;
+        }
+
+        if (this.currentReplyType === 'feedback') {
+            const res = await fetch(`/api/admin/feedback/${this.currentReplyId}`, { headers: { 'Authorization': `Bearer ${this.token}` } });
+            const data = await res.json();
+            const fb = data && data.feedback;
+            if (!fb || !fb.email) throw new Error('Feedback details not found');
+
+            const params = {
+                name: 'Zidalco Admin',
+                email: 'no-reply@zidalco.com',
+                reply_to: 'no-reply@zidalco.com',
+                to_email: fb.email,
+                recipient_email: fb.email,
+                subject: `Reply to your feedback`,
+                message: replyMessage
+            };
+            await emailjs.send('service_vxprigz','template_umpowaa', params);
+            return;
+        }
+        throw new Error('Unknown reply type');
     }
     
     async markAsRead(type, id) {

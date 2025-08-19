@@ -84,6 +84,11 @@
   <section class="services-page">
     <div class="container">
         <h2>What We Offer</h2>
+        <div id="services-announcement" class="settings-content" style="margin:12px 0; display:none;">
+            <h4 id="services-announce-title"></h4>
+            <p id="services-announce-body"></p>
+            <img id="services-announce-image" style="max-width:360px;border-radius:8px;display:none;" />
+        </div>
         <div class="services-grid">
 
             <!-- Building Construction -->
@@ -209,23 +214,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
+<script>
+// Load services dynamic content (frontend-only)
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        const list = JSON.parse(localStorage.getItem('zidalco_contents') || '[]');
+        const items = list.filter(i => i.location === 'services' && i.slot === 'services_message' && !i.is_deleted && i.is_published);
+        if (items.length) {
+            const c = items[0];
+            const wrap = document.getElementById('services-announcement');
+            document.getElementById('services-announce-title').textContent = c.title || '';
+            document.getElementById('services-announce-body').textContent = c.body || '';
+            if (c.image_url) { const img = document.getElementById('services-announce-image'); img.src = c.image_url; img.style.display='block'; }
+            wrap.style.display = 'block';
+        }
+        window.addEventListener('storage', () => location.reload(), false);
+    } catch(_) {}
+});
+</script>
     <script>
 document.addEventListener("DOMContentLoaded", () => {
-    fetch("load_services.php")
-        .then(response => response.json())
-        .then(data => {
-            const container = document.querySelector(".services-grid");
-            data.forEach(service => {
-                const card = document.createElement("div");
-                card.className = "service-card";
-                card.innerHTML = `
-                    <img src="${service.image_url || 'Images/default.jpg'}" alt="${service.title}">
-                    <h3>${service.title}</h3>
-                    <p>${service.description}</p>
-                `;
-                container.appendChild(card);
-            });
-        });
+    // removed PHP-driven dynamic services (not used on static hosting)
 });
 </script>
 </body>
