@@ -3,11 +3,12 @@ require('dotenv').config();
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY; // anon or service
-const USE_MOCK = String(process.env.SUPABASE_MOCK).toLowerCase() === 'true' || !SUPABASE_URL || !SUPABASE_KEY;
+const USE_MOCK = String(process.env.SUPABASE_MOCK).toLowerCase() === 'true';
 
 const supabase = createClient(SUPABASE_URL || 'http://mock.local', SUPABASE_KEY || 'mock-key', {
   auth: {
-    persistSession: false
+    persistSession: false,
+    autoRefreshToken: true
   }
 });
 

@@ -234,7 +234,21 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
     <script>
 document.addEventListener("DOMContentLoaded", () => {
-    // removed PHP-driven dynamic services (not used on static hosting)
+    fetch("load_services.php")
+        .then(response => response.json())
+        .then(data => {
+            const container = document.querySelector(".services-grid");
+            data.forEach(service => {
+                const card = document.createElement("div");
+                card.className = "service-card";
+                card.innerHTML = `
+                    <img src="${service.image_url || 'Images/default.jpg'}" alt="${service.title}">
+                    <h3>${service.title}</h3>
+                    <p>${service.description}</p>
+                `;
+                container.appendChild(card);
+            });
+        });
 });
 </script>
 </body>

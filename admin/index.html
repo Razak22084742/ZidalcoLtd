@@ -35,34 +35,66 @@
             <form id="loginForm" class="auth-form active">
                 <div class="form-group">
                     <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" required>
+                    <div class="input-wrapper">
+                        <input type="email" id="loginEmail" placeholder="you@company.com" autocomplete="email" required>
+                        <i class="fas fa-at input-icon"></i>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" required>
+                    <div class="input-wrapper">
+                        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
+                        <button type="button" id="toggleLoginPassword" class="icon-btn" aria-label="Show password"><i class="fas fa-eye"></i></button>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Sign In</button>
+                <div class="form-row">
+                    <label class="checkbox"><input type="checkbox" id="loginRemember" checked> Remember me</label>
+                    <button type="button" id="forgotPasswordBtn" class="link-btn">Forgot password?</button>
+                </div>
+                <button type="submit" class="btn btn-primary" id="loginSubmitBtn">
+                    <span class="btn-label">Sign In</span>
+                    <span class="btn-spinner" aria-hidden="true"></span>
+                </button>
             </form>
             
             <!-- Signup Form -->
             <form id="signupForm" class="auth-form">
                 <div class="form-group">
                     <label for="signupName">Full Name</label>
-                    <input type="text" id="signupName" required>
+                    <div class="input-wrapper">
+                        <input type="text" id="signupName" placeholder="Jane Doe" autocomplete="name" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="signupEmail">Email</label>
-                    <input type="email" id="signupEmail" required>
+                    <div class="input-wrapper">
+                        <input type="email" id="signupEmail" placeholder="you@company.com" autocomplete="email" required>
+                        <i class="fas fa-at input-icon"></i>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="signupPassword">Password</label>
-                    <input type="password" id="signupPassword" required>
+                    <div class="input-wrapper">
+                        <input type="password" id="signupPassword" placeholder="Minimum 8 characters" autocomplete="new-password" required>
+                        <button type="button" id="toggleSignupPassword" class="icon-btn" aria-label="Show password"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="bar"></div>
+                        <span class="label">Weak</span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="signupConfirmPassword">Confirm Password</label>
-                    <input type="password" id="signupConfirmPassword" required>
+                    <div class="input-wrapper">
+                        <input type="password" id="signupConfirmPassword" placeholder="Re-type password" autocomplete="new-password" required>
+                        <button type="button" id="toggleSignupConfirmPassword" class="icon-btn" aria-label="Show password"><i class="fas fa-eye"></i></button>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Create Account</button>
+                <button type="submit" class="btn btn-primary" id="signupSubmitBtn">
+                    <span class="btn-label">Create Account</span>
+                    <span class="btn-spinner" aria-hidden="true"></span>
+                </button>
             </form>
         </div>
     </div>
@@ -370,6 +402,8 @@
         </div>
     </div>
 
+    <div id="toastContainer" class="toast-container"></div>
+    <div id="loadingOverlay" class="loading-overlay hidden"><div class="spinner"></div></div>
     <script src="admin.js"></script>
 </body>
 </html>

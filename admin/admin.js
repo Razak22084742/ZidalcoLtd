@@ -1,8 +1,8 @@
 // Admin Dashboard JavaScript
 class AdminDashboard {
     constructor() {
-        this.token = localStorage.getItem('admin_token');
-        this.admin = JSON.parse(localStorage.getItem('admin_data') || '{}');
+        this.token = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
+        this.admin = JSON.parse(localStorage.getItem('admin_data') || sessionStorage.getItem('admin_data') || '{}');
         this.currentSection = 'dashboard';
         this.notificationInterval = null;
         this.useLocalContent = true; // Frontend-only CMS mode
@@ -35,6 +35,22 @@ class AdminDashboard {
             e.preventDefault();
             this.handleSignup();
         });
+
+        // Password visibility toggles
+        const toggleLoginBtn = document.getElementById('toggleLoginPassword');
+        if (toggleLoginBtn) toggleLoginBtn.addEventListener('click', () => this.togglePasswordVisibility('loginPassword', 'toggleLoginPassword'));
+        const toggleSignupBtn = document.getElementById('toggleSignupPassword');
+        if (toggleSignupBtn) toggleSignupBtn.addEventListener('click', () => this.togglePasswordVisibility('signupPassword', 'toggleSignupPassword'));
+        const toggleSignupConfirmBtn = document.getElementById('toggleSignupConfirmPassword');
+        if (toggleSignupConfirmBtn) toggleSignupConfirmBtn.addEventListener('click', () => this.togglePasswordVisibility('signupConfirmPassword', 'toggleSignupConfirmPassword'));
+
+        // Password strength meter
+        const signupPassword = document.getElementById('signupPassword');
+        if (signupPassword) signupPassword.addEventListener('input', () => this.updatePasswordStrength(signupPassword.value));
+
+        // Forgot password
+        const forgotBtn = document.getElementById('forgotPasswordBtn');
+        if (forgotBtn) forgotBtn.addEventListener('click', () => this.handleForgotPassword());
         
         // Navigation
         document.querySelectorAll('.nav-item').forEach(item => {
@@ -115,7 +131,9 @@ class AdminDashboard {
     async handleLogin() {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
-        
+        const remember = document.getElementById('loginRemember')?.checked !== false;
+        const submitBtn = document.getElementById('loginSubmitBtn');
+        this.setButtonLoading(submitBtn, true);
         try {
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -130,17 +148,22 @@ class AdminDashboard {
             if (data.success) {
                 this.token = data.token; // Supabase access token
                 this.admin = data.admin || { email };
-                
-                localStorage.setItem('admin_token', this.token);
-                localStorage.setItem('admin_data', JSON.stringify(this.admin));
+                const storage = remember ? localStorage : sessionStorage;
+                const other = remember ? sessionStorage : localStorage;
+                storage.setItem('admin_token', this.token);
+                storage.setItem('admin_data', JSON.stringify(this.admin));
+                other.removeItem('admin_token');
+                other.removeItem('admin_data');
                 
                 this.showDashboard();
                 this.loadDashboardData();
             } else {
-                this.showError(data.message);
+                this.showError(data.message || 'Invalid credentials');
             }
         } catch (error) {
             this.showError('Login failed. Please try again.');
+        } finally {
+            this.setButtonLoading(submitBtn, false);
         }
     }
     
@@ -149,12 +172,13 @@ class AdminDashboard {
         const email = document.getElementById('signupEmail').value;
         const password = document.getElementById('signupPassword').value;
         const confirmPassword = document.getElementById('signupConfirmPassword').value;
-        
+        const submitBtn = document.getElementById('signupSubmitBtn');
         if (password !== confirmPassword) {
             this.showError('Passwords do not match');
             return;
         }
         
+        this.setButtonLoading(submitBtn, true);
         try {
             const response = await fetch('/api/auth/signup', {
                 method: 'POST',
@@ -175,6 +199,8 @@ class AdminDashboard {
             }
         } catch (error) {
             this.showError('Signup failed. Please try again.');
+        } finally {
+            this.setButtonLoading(submitBtn, false);
         }
     }
     
@@ -196,7 +222,7 @@ class AdminDashboard {
         document.getElementById('loginSection').classList.add('hidden');
         document.getElementById('dashboardSection').classList.remove('hidden');
         
-        document.getElementById('adminName').textContent = this.admin.name;
+        document.getElementById('adminName').textContent = this.admin.name || this.admin.email || 'Admin';
         this.navigateToSection('dashboard');
     }
     
@@ -992,13 +1018,86 @@ class AdminDashboard {
     }
     
     showError(message) {
-        // Simple error display - you can enhance this with a proper toast system
-        alert('Error: ' + message);
+        this.showToast(String(message || 'Error'), 'error');
     }
     
     showSuccess(message) {
-        // Simple success display - you can enhance this with a proper toast system
-        alert('Success: ' + message);
+        this.showToast(String(message || 'Success'), 'success');
+    }
+
+    showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return alert(message);
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-triangle':'fa-info-circle'}"></i><span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-4px)';
+            setTimeout(() => toast.remove(), 250);
+        }, 3500);
+    }
+
+    setButtonLoading(btn, isLoading) {
+        if (!btn) return;
+        btn.classList.toggle('loading', !!isLoading);
+        btn.disabled = !!isLoading;
+    }
+
+    togglePasswordVisibility(inputId, btnId) {
+        const input = document.getElementById(inputId);
+        const btn = document.getElementById(btnId);
+        if (!input || !btn) return;
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        const icon = btn.querySelector('i');
+        if (icon) icon.className = isPassword ? 'fas fa-eye-slash' : 'fas fa-eye';
+    }
+
+    updatePasswordStrength(pwd) {
+        const meter = document.getElementById('passwordStrength');
+        if (!meter) return;
+        const bar = meter.querySelector('.bar');
+        const label = meter.querySelector('.label');
+        let score = 0;
+        if (pwd.length >= 8) score++;
+        if (/[a-z]/.test(pwd)) score++;
+        if (/[A-Z]/.test(pwd)) score++;
+        if (/[0-9]/.test(pwd)) score++;
+        if (/[^A-Za-z0-9]/.test(pwd)) score++;
+        let width = '20%';
+        let text = 'Very weak';
+        let color = '#ef4444';
+        if (score >= 2) { width = '40%'; text = 'Weak'; color = '#f97316'; }
+        if (score >= 3) { width = '60%'; text = 'Medium'; color = '#f59e0b'; }
+        if (score >= 4) { width = '85%'; text = 'Strong'; color = '#10b981'; }
+        if (score >= 5) { width = '100%'; text = 'Very strong'; color = '#059669'; }
+        if (bar) {
+            bar.style.position = 'relative';
+            let indicator = bar.querySelector('span');
+            if (!indicator) { indicator = document.createElement('span'); indicator.style.position='absolute'; indicator.style.left='0'; indicator.style.top='0'; indicator.style.bottom='0'; indicator.style.borderRadius='4px'; bar.appendChild(indicator); }
+            indicator.style.width = width;
+            indicator.style.background = color;
+        }
+        if (label) label.textContent = text;
+    }
+
+    async handleForgotPassword() {
+        const email = (document.getElementById('loginEmail')?.value || '').trim();
+        if (!email) { this.showError('Enter your email to reset password'); return; }
+        try {
+            const res = await fetch('/api/auth/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            if (data.success) this.showSuccess('If the email exists, a reset link has been sent.');
+            else this.showError(data.message || 'Could not start password reset');
+        } catch (_) {
+            this.showError('Failed to request password reset');
+        }
     }
 }
 

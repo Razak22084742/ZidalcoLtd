@@ -5,10 +5,11 @@ const { authMiddleware } = require('../middleware/auth');
 const { sendEmail } = require('../utils/notifications');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const multer = require('multer');
 
-// Upload storage (local uploads folder)
-const uploadsDir = path.join(__dirname, '..', 'uploads');
+// Upload storage (use OS temp dir for Vercel/serverless)
+const uploadsDir = path.join(os.tmpdir(), 'zidalco-uploads');
 if (!fs.existsSync(uploadsDir)) {
   try { fs.mkdirSync(uploadsDir, { recursive: true }); } catch (_) {}
 }
@@ -29,10 +30,10 @@ router.use(authMiddleware);
 router.get('/dashboard-stats', async (req, res) => {
   try {
     const [feedbackCount, emailsCount, unreadFeedback, unreadEmails] = await Promise.all([
-      supabaseRequest('feedback?select=count', 'GET'),
-      supabaseRequest('emails?select=count', 'GET'),
-      supabaseRequest('feedback?is_read=eq.false&select=count', 'GET'),
-      supabaseRequest('emails?is_read=eq.false&select=count', 'GET')
+      supabaseRequest('feedback?status=neq.deleted&select=count', 'GET'),
+      supabaseRequest('emails?status=neq.deleted&select=count', 'GET'),
+      supabaseRequest('feedback?is_read=eq.false&status=neq.deleted&select=count', 'GET'),
+      supabaseRequest('emails?is_read=eq.false&status=neq.deleted&select=count', 'GET')
     ]);
 
     res.json({
@@ -54,8 +55,8 @@ router.get('/dashboard-stats', async (req, res) => {
 router.get('/notifications', async (req, res) => {
   try {
     const [recentFeedback, recentEmails] = await Promise.all([
-      supabaseRequest('feedback?is_read=eq.false&order=created_at.desc&limit=10', 'GET'),
-      supabaseRequest('emails?is_read=eq.false&order=created_at.desc&limit=10', 'GET')
+      supabaseRequest('feedback?is_read=eq.false&status=neq.deleted&order=created_at.desc&limit=10', 'GET'),
+      supabaseRequest('emails?is_read=eq.false&status=neq.deleted&order=created_at.desc&limit=10', 'GET')
     ]);
 
     const notifications = [];
@@ -220,7 +221,11 @@ router.get('/feedback', async (req, res) => {
   try {
     const { limit = 50, offset = 0, status } = req.query;
     let query = `feedback?select=*&order=created_at.desc&limit=${limit}&offset=${offset}`;
-    if (status) query += `&status=eq.${status}`;
+    if (status) {
+      query += `&status=eq.${status}`;
+    } else {
+      query += `&status=neq.deleted`;
+    }
     const result = await supabaseRequest(query, 'GET');
     if (result.status === 200) {
       res.json({ success: true, feedback: result.data });
@@ -249,7 +254,7 @@ router.get('/feedback/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/admin/feedback/:id (soft delete)
+// DELETE /api/admin/feedback/:id (permanent delete)
 router.delete('/feedback/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -257,11 +262,15 @@ router.delete('/feedback/:id', async (req, res) => {
       return res.status(400).json({ error: true, message: 'Feedback ID is required' });
     }
 
-    const result = await supabaseRequest(`feedback?id=eq.${id}`, 'PATCH', { status: 'deleted', is_read: true });
+    let result = await supabaseRequest(`feedback?id=eq.${id}`, 'DELETE');
+    if (result.status >= 200 && result.status < 300) {
+      return res.json({ success: true, message: 'Feedback permanently removed' });
+    }
+    // Fallback to soft-delete so it disappears from UI even if permanent delete is blocked
+    result = await supabaseRequest(`feedback?id=eq.${id}`, 'PATCH', { status: 'deleted', is_read: true });
     if (result.status >= 200 && result.status < 300) {
       return res.json({ success: true, message: 'Feedback removed' });
     }
-
     return res.status(500).json({ error: true, message: 'Failed to remove feedback' });
   } catch (error) {
     console.error('Delete feedback error:', error);
@@ -274,7 +283,11 @@ router.get('/emails', async (req, res) => {
   try {
     const { limit = 50, offset = 0, status } = req.query;
     let query = `emails?select=*&order=created_at.desc&limit=${limit}&offset=${offset}`;
-    if (status) query += `&status=eq.${status}`;
+    if (status) {
+      query += `&status=eq.${status}`;
+    } else {
+      query += `&status=neq.deleted`;
+    }
     const result = await supabaseRequest(query, 'GET');
     if (result.status === 200) {
       res.json({ success: true, emails: result.data });
@@ -303,12 +316,17 @@ router.get('/emails/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/admin/emails/:id (soft delete)
+// DELETE /api/admin/emails/:id (permanent delete)
 router.delete('/emails/:id', async (req, res) => {
   try {
     const { id } = req.params;
     if (!id) return res.status(400).json({ error: true, message: 'Email ID is required' });
-    const result = await supabaseRequest(`emails?id=eq.${id}`, 'PATCH', { status: 'deleted', is_read: true });
+    let result = await supabaseRequest(`emails?id=eq.${id}`, 'DELETE');
+    if (result.status >= 200 && result.status < 300) {
+      return res.json({ success: true, message: 'Email permanently removed' });
+    }
+    // Fallback to soft-delete so it disappears from UI even if permanent delete is blocked
+    result = await supabaseRequest(`emails?id=eq.${id}`, 'PATCH', { status: 'deleted', is_read: true });
     if (result.status >= 200 && result.status < 300) {
       return res.json({ success: true, message: 'Email removed' });
     }

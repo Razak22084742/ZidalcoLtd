@@ -1,5 +1,5 @@
 const { getUserFromAccessToken } = require('../utils/supabaseClient');
-const USE_MOCK = String(process.env.SUPABASE_MOCK).toLowerCase() === 'true' || !process.env.SUPABASE_URL || !process.env.SUPABASE_KEY;
+const USE_MOCK = String(process.env.SUPABASE_MOCK).toLowerCase() === 'true';
 
 async function authMiddleware(req, res, next) {
   const authHeader = req.headers['authorization'] || '';

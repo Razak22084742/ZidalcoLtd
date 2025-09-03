@@ -3,16 +3,17 @@ require('dotenv').config();
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
-const USE_MOCK = String(process.env.SUPABASE_MOCK).toLowerCase() === 'true' || !SUPABASE_URL || !SUPABASE_KEY;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || SUPABASE_KEY;
+const USE_MOCK = String(process.env.SUPABASE_MOCK).toLowerCase() === 'true' || !SUPABASE_URL || !SUPABASE_SERVICE_KEY;
 
-if (!SUPABASE_URL || !SUPABASE_KEY) {
+if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
 	console.warn('Supabase env vars are not set. Running in MOCK mode. Set SUPABASE_URL and SUPABASE_KEY to enable real DB.');
 }
 
 function getHeaders() {
 	return {
-		'apikey': SUPABASE_KEY,
-		'Authorization': `Bearer ${SUPABASE_KEY}`,
+		'apikey': SUPABASE_SERVICE_KEY,
+		'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
 		'Content-Type': 'application/json',
 		'Prefer': 'return=representation'
 	};

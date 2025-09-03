@@ -13,13 +13,13 @@ window.addEventListener('scroll', () => {
 });
 
 // ======= MOBILE MENU TOGGLE =======
-const hamburgerEl = document.getElementById('hamburger');
+const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('nav-links');
 
-if (hamburgerEl && navLinks) {
-    hamburgerEl.addEventListener('click', () => {
+if (hamburger) {
+    hamburger.addEventListener('click', () => {
         navLinks.classList.toggle('active');
-        hamburgerEl.classList.toggle('open');
+        hamburger.classList.toggle('open');
     });
 }
 
@@ -95,50 +95,43 @@ function showNotification(message, isError = false) {
 const feedbackForm = document.getElementById('feedbackForm');
 const commentsList = document.getElementById('commentsList');
 
-async function loadComments() {
-    try {
-        const res = await fetch('/api/feedback?limit=50');
-        const data = await res.json();
-        if (!data.success) throw new Error('failed');
-        const items = data.feedback || [];
-        commentsList.innerHTML = '';
-        items.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'comment';
-            div.innerHTML = `
-                <div class="comment-header"><strong>${item.name || 'Anonymous'}</strong> <small>${new Date(item.created_at).toLocaleString()}</small></div>
-                <p>${item.message || ''}</p>
-            `;
-            commentsList.appendChild(div);
-            setTimeout(() => div.classList.add('visible'), index * 100);
+function loadComments() {
+    fetch('load_comments.php')
+        .then(res => res.text())
+        .then(data => {
+            commentsList.innerHTML = data;
+
+            const commentItems = document.querySelectorAll('.comment');
+            commentItems.forEach((comment, index) => {
+                setTimeout(() => {
+                    comment.classList.add('visible');
+                }, index * 100);
+            });
         });
-    } catch (_) {
-        // silent fail
-    }
 }
 
 if (feedbackForm) {
     feedbackForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        const nameInput = feedbackForm.querySelector('[name="name"]');
-        const messageInput = feedbackForm.querySelector('[name="message"]');
-        const payload = { name: (nameInput && nameInput.value) || 'Anonymous', message: (messageInput && messageInput.value) || '' };
+        const formData = new FormData(feedbackForm);
 
-        fetch('/api/feedback/submit', {
+        fetch('save_comment.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: formData
         })
-        .then(res => res.json())
+        .then(res => res.text())
         .then(data => {
-            if (data && data.success) {
+            if (data.trim() === "success") {
                 feedbackForm.reset();
                 loadComments();
                 showNotification("✅ Your feedback was submitted!");
+
                 setTimeout(() => {
                     const firstComment = document.querySelector('.comment');
-                    if (firstComment) firstComment.classList.add('visible');
+                    if (firstComment) {
+                        firstComment.classList.add('visible');
+                    }
                 }, 200);
             } else {
                 showNotification("❌ Failed to submit comment. Try again.", true);
@@ -235,10 +228,11 @@ document.querySelectorAll('#dropdown-menu a').forEach(link => {
     });
 });
 // ======= DROPDOWN MENU FUNCTIONALITY =======
+const hamburger = document.getElementById('hamburger');
 const dropdownMenu = document.getElementById('dropdown-menu');
 
-if (hamburgerEl && dropdownMenu) {
-    hamburgerEl.addEventListener('click', (e) => {
+if (hamburger && dropdownMenu) {
+    hamburger.addEventListener('click', (e) => {
         e.stopPropagation();
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });

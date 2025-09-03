@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const os = require('os');
 require('dotenv').config();
 
 const app = express();
@@ -9,10 +10,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Favicon and missing favicon.png fallback
+app.get(['/favicon.ico', '/Images/favicon.png'], (req, res) => {
+  const logoPath = path.join(__dirname, 'Images', 'logo.jpg');
+  res.type('image/jpeg');
+  res.sendFile(logoPath, (err) => {
+    if (err) res.status(204).end();
+  });
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname)));
-// Serve uploaded files statically
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Serve uploaded files statically (OS temp dir for serverless)
+app.use('/uploads', express.static(path.join(os.tmpdir(), 'zidalco-uploads')));
 
 // Routes
 const feedbackRoutes = require('./routes/feedback');
